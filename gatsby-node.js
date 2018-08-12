@@ -27,7 +27,11 @@ exports.createPages = (
   return new Promise((resolve, reject) => {
     const carTemplate = path.resolve(`src/templates/carsIndex.js`);
     pages.map((type) => {
-      let typeParams = Object.assign({}, search_params[0], {params: {hitsPerPage: 21, filters: `car_type:${type}`}})
+      let typeParams = Object.assign({}, search_params[0], {params: {
+        hitsPerPage: 21,
+        filters: `car_type:${type}`,
+        facets: facets
+      }})
       client.search([typeParams]).then(response => {
         createPage({
           path: `${type}-cars`,
