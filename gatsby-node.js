@@ -3,9 +3,35 @@ const path = require(`path`);
 const { SearchResults, SearchParameters } = require('algoliasearch-helper');
 
 exports.createPages = (
-  { graphql, boundActionCreators },
-  {appId, apiKey, index, hitsPerPage, facets, pages}
+  {
+    graphql,
+    boundActionCreators
+  },
+  {
+    appId,
+    apiKey,
+    index,
+    hitsPerPage,
+    facets,
+    pages,
+    template
+  }
 ) => {
+  function createPageWithResults(type, response, state, templatePath) {
+    createPage({
+      path: `${type}-cars`,
+      component: templatePath,
+      context: {
+        car_type: type,
+        resultsState: {
+          content: new SearchResults(state, response.results),
+          _originalResponse: response,
+          state,
+        },
+      },
+    })
+  }
+
   const client = algoliasearch(
     appId,
     apiKey
@@ -24,27 +50,17 @@ exports.createPages = (
   });
 
   const { createPage } = boundActionCreators
+
   return new Promise((resolve, reject) => {
-    const carTemplate = path.resolve(`src/templates/carsIndex.js`);
+    const templatePath = path.resolve(template);
     pages.map((type) => {
       let typeParams = Object.assign({}, search_params[0], {params: {
-        hitsPerPage: 21,
+        hitsPerPage: hitsPerPage,
         filters: `car_type:${type}`,
         facets: facets
       }})
       client.search([typeParams]).then(response => {
-        createPage({
-          path: `${type}-cars`,
-          component: carTemplate,
-          context: {
-            car_type: type,
-            resultsState: {
-              content: new SearchResults(state, response.results),
-              _originalResponse: response,
-              state,
-            },
-          },
-        })
+        createPageWithResults(type, response, state, templatePath)
       })
     })
     resolve()
