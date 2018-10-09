@@ -59,10 +59,11 @@ exports.createPages = (
         filters: `car_type:${type}`,
         facets: facets
       }})
-      client.search([typeParams]).then(response => {
-        createPageWithResults(type, response, state, templatePath)
-      })
+      resolve(
+        client.search([typeParams]).then(response => {
+          createPageWithResults(type, response, state, templatePath)
+        })
+      )
     })
-    resolve()
   })
 };
