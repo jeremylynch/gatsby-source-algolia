@@ -19,7 +19,7 @@ exports.createPages = (
 ) => {
   function createPageWithResults(type, response, state, templatePath) {
     createPage({
-      path: `${type}-cars`,
+      path: `${type}-cars/`,
       component: templatePath,
       context: {
         car_type: type,
