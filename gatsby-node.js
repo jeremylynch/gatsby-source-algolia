@@ -54,13 +54,13 @@ exports.createPages = (
   return new Promise((resolve, reject) => {
     const templatePath = path.resolve(template);
     pages.map((page) => {
-      let typeParams = Object.assign({}, search_params[0], {params: {
+      let searchParams = Object.assign({}, search_params[0], {params: {
         hitsPerPage: hitsPerPage,
-        filters: page.filters,
-        facets: facets
+        facets: facets,
+        ...page.search_params
       }})
       resolve(
-        client.search([typeParams]).then(response => {
+        client.search([searchParams]).then(response => {
           createPageWithResults(page, response, state, templatePath)
         })
       )
