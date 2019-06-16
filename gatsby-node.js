@@ -2,7 +2,7 @@ const algoliasearch = require('algoliasearch')
 const path = require(`path`);
 const { SearchResults, SearchParameters } = require('algoliasearch-helper');
 
-exports.createPages = (
+exports.createPages = async (
   {
     graphql,
     actions
@@ -51,19 +51,18 @@ exports.createPages = (
 
   const { createPage } = actions
 
-  return new Promise((resolve, reject) => {
-    const templatePath = path.resolve(template);
-    pages.map((page) => {
+  const templatePath = path.resolve(template);
+
+  await Promise.all(
+    pages.map(page => {
       let searchParams = Object.assign({}, search_params[0], {params: {
         hitsPerPage: hitsPerPage,
         facets: facets,
         ...page.search_params
       }})
-      resolve(
-        client.search([searchParams]).then(response => {
-          createPageWithResults(page, response, state, templatePath)
-        })
-      )
+      return client.search([searchParams]).then(response => {
+        return createPageWithResults(page, response, state, templatePath)
+      })
     })
-  })
+  )
 };
