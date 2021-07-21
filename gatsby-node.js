@@ -23,6 +23,7 @@ exports.createPages = async (
       component: templatePath,
       context: {
         ...page.context,
+        search_params: page.search_params,
         resultsState: {
           content: new SearchResults(state, response.results),
           _originalResponse: response,
