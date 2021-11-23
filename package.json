@@ -24,6 +24,6 @@
   "homepage": "https://github.com/jeremylynch/gatsby-source-algolia#readme",
   "dependencies": {
     "algoliasearch": "^3.30.0",
-    "algoliasearch-helper": "^2.26.1"
+    "algoliasearch-helper": "^3.6.2"
   }
 }
